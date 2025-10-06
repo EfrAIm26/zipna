@@ -1,14 +1,6 @@
 // Cliente para OpenRouter API
 import { mockSendMessage } from './mockOpenRouter';
 
-// Detectar si debemos usar mock (sin API key configurada)
-const USE_MOCK = !import.meta.env.VITE_OPENROUTER_API_KEY;
-
-interface Message {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-}
-
 interface OpenRouterResponse {
   choices: Array<{
     message: {

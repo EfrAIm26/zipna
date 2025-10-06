@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Message } from '../../store/chatStore';
+import { type Message } from '../../store/chatStore';
 import { User, Bot } from 'lucide-react';
 
 interface MessageListProps {

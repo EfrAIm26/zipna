@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent, useRef, useEffect } from 'react';
+import { useState, type KeyboardEvent, useRef, useEffect } from 'react';
 import { SendHorizontal } from 'lucide-react';
 
 interface ChatInputProps {
