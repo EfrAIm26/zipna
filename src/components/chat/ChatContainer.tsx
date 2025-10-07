@@ -3,61 +3,79 @@ import { sendMessage } from '../../lib/openrouter';
 import { extractMermaidCode } from '../../lib/utils';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, MessageCircle } from 'lucide-react';
 
 export function ChatContainer() {
-  const { messages, isLoading, error, addMessage, setLoading, setError, setCurrentDiagram } = useChatStore();
+  const { 
+    messages, 
+    currentChatId, 
+    isLoading, 
+    error, 
+    saveMessage, 
+    saveDiagram, 
+    setLoading, 
+    setError, 
+    setCurrentDiagram 
+  } = useChatStore();
 
   const handleSendMessage = async (content: string) => {
-    if (!content.trim() || isLoading) return;
+    if (!content.trim() || isLoading || !currentChatId) return;
 
     try {
       // Limpiar error previo
       setError(null);
-
-      // Agregar mensaje del usuario
-      addMessage({
-        role: 'user',
-        content
-      });
-
-      // Iniciar loading
       setLoading(true);
+
+      // Guardar mensaje del usuario en Supabase
+      const userMessageId = await saveMessage(currentChatId, 'user', content);
+      console.log('✅ User message saved:', userMessageId);
 
       // Llamar a OpenRouter
       const response = await sendMessage(content);
-
-      // Agregar respuesta de la IA
-      addMessage({
-        role: 'assistant',
-        content: response
-      });
-
-      // Extraer y actualizar diagrama Mermaid
       console.log('🔄 [ChatContainer] Response received:', response.substring(0, 200));
+
+      // Extraer código Mermaid
       const mermaidCode = extractMermaidCode(response);
       console.log('📊 [ChatContainer] Extracted code:', mermaidCode ? mermaidCode.substring(0, 100) : 'null');
+
+      // Guardar respuesta de la IA en Supabase
+      const assistantMessageId = await saveMessage(currentChatId, 'assistant', response, mermaidCode || undefined);
+      console.log('✅ Assistant message saved:', assistantMessageId);
+
+      // Si hay diagrama, guardarlo y actualizarlo
       if (mermaidCode) {
         setCurrentDiagram(mermaidCode);
-        console.log('✅ [ChatContainer] Diagram updated in store');
-      } else {
-        console.log('⚠️ [ChatContainer] No Mermaid code extracted');
+        
+        // Generar título del diagrama basado en el contenido del usuario
+        const diagramTitle = content.length > 50 ? content.substring(0, 50) + '...' : content;
+        
+        await saveDiagram(currentChatId, assistantMessageId, mermaidCode, diagramTitle);
+        console.log('✅ [ChatContainer] Diagram saved');
       }
 
     } catch (error) {
       console.error('Error en handleSendMessage:', error);
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
       setError(errorMessage);
-      
-      // Agregar mensaje de error visible para el usuario
-      addMessage({
-        role: 'assistant',
-        content: `❌ Error: ${errorMessage}\n\nPor favor, verifica tu API key de OpenRouter en el archivo .env`
-      });
     } finally {
       setLoading(false);
     }
   };
+
+  // Si no hay chat seleccionado, mostrar placeholder
+  if (!currentChatId) {
+    return (
+      <div className="flex flex-col h-full bg-white items-center justify-center p-8">
+        <MessageCircle size={64} className="text-gray-300 mb-4" />
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          Selecciona o crea un chat
+        </h3>
+        <p className="text-gray-500 text-center max-w-md">
+          Elige un chat existente de la barra lateral o crea uno nuevo para comenzar a generar diagramas con IA
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-white">
