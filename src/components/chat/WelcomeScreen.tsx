@@ -72,18 +72,21 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>(0)
 
   return (
-    <div className="flex flex-col items-center justify-center h-full text-gray-600 text-center px-6 pt-12 pb-8 overflow-y-auto">
-      <img
-        src="/favicon-zipna.ico.png"
-        alt="Zipna"
-        className="w-20 h-20 mb-8 object-contain"
-      />
-      <h2 className="text-6xl font-bold mb-16 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-        How can I help you?
-      </h2>
+    <div className="flex flex-col items-center h-full text-gray-600 text-center px-6 py-8 overflow-y-auto">
+      {/* Top section - Logo and Title */}
+      <div className="flex flex-col items-center justify-center flex-shrink-0 pt-8 pb-12">
+        <img
+          src="/favicon-zipna.ico.png"
+          alt="Zipna"
+          className="w-16 h-16 mb-6 object-contain"
+        />
+        <h2 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+          How can I help you?
+        </h2>
+      </div>
 
-      {/* Categories Tabs - Horizontal */}
-      <div className="flex gap-4 mb-8 flex-wrap justify-center">
+      {/* Middle section - Categories */}
+      <div className="flex gap-4 mb-8 flex-wrap justify-center flex-shrink-0">
         {categories.map((category, idx) => (
           <button
             key={category.name}
@@ -118,9 +121,9 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
         ))}
       </div>
 
-      {/* Examples for Selected Category */}
-      <div className="w-full max-w-4xl">
-        <div className="grid grid-cols-2 gap-4">
+      {/* Bottom section - Examples (more space below) */}
+      <div className="w-full max-w-4xl flex-1 flex items-center justify-center pb-12">
+        <div className="grid grid-cols-2 gap-4 w-full">
           {categories[selectedCategory].examples.map((example, idx) => (
             <button
               key={idx}

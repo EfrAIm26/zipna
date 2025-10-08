@@ -7,17 +7,17 @@ interface MarkdownMessageProps {
 
 export function MarkdownMessage({ content }: MarkdownMessageProps) {
   return (
-    <div className="prose prose-sm max-w-none text-gray-800">
+    <div className="prose prose-sm max-w-none text-gray-800 text-left">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          // Headings - Estilo Notion
-          h1: ({ children }) => <h1 className="text-2xl font-bold mb-3 text-gray-900">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-xl font-semibold mb-3 text-gray-900">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-lg font-semibold mb-2 text-gray-900">{children}</h3>,
+          // Headings - Estilo ChatGPT
+          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 pb-3 text-gray-900 border-b border-gray-200">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-semibold mb-4 pb-3 text-gray-900 border-b border-gray-200">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-semibold mb-3 text-gray-900">{children}</h3>,
           
-          // Paragraphs
-          p: ({ children }) => <p className="mb-4 leading-relaxed text-gray-800">{children}</p>,
+          // Paragraphs - Con separador
+          p: ({ children }) => <p className="mb-4 pb-4 leading-relaxed text-gray-800 border-b border-gray-100 last:border-0">{children}</p>,
           
           // Lists - Estilo limpio
           ul: ({ children }) => <ul className="list-disc list-outside ml-5 mb-4 space-y-1.5">{children}</ul>,
