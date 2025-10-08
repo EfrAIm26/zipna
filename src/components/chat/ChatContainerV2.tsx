@@ -167,16 +167,16 @@ export function ChatContainerV2() {
 
       {/* Input Footer - estilo Cursor */}
       <div className="border-t border-gray-200 bg-white px-4 py-3">
-        <div className="flex items-end gap-2">
+        <div className="flex items-center gap-2">
           {/* Botón de adjuntar */}
           <button
             onClick={() => setShowFileUpload(!showFileUpload)}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`p-2.5 rounded-lg transition-colors ${
               showFileUpload || attachedFiles.length > 0
                 ? 'bg-blue-100 text-blue-600'
                 : 'hover:bg-gray-100 text-gray-500'
             }`}
-            title="Adjuntar archivo"
+            title="Attach file"
           >
             <Paperclip size={20} />
           </button>

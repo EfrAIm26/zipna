@@ -20,16 +20,14 @@ export function LoginPage() {
   }
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col items-center justify-center overflow-hidden">
-      <div className="flex flex-col items-center justify-center w-full">
+    <div className="fixed inset-0 h-screen w-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center overflow-hidden">
+      <div className="flex flex-col items-center justify-center">
         {/* Logo */}
-        <div className="mb-8">
-          <img
-            src="/favicon-zipna.ico.png"
-            alt="Zipna Logo"
-            className="w-24 h-24 object-contain mx-auto"
-          />
-        </div>
+        <img
+          src="/favicon-zipna.ico.png"
+          alt="Zipna Logo"
+          className="w-24 h-24 object-contain mb-8"
+        />
 
         {/* Title */}
         <h1 className="text-5xl font-bold text-gray-900 mb-6 text-center">Zipna</h1>
@@ -41,7 +39,7 @@ export function LoginPage() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto">
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 max-w-md">
             <p className="text-red-800 text-sm text-center">{error}</p>
           </div>
         )}
@@ -50,7 +48,7 @@ export function LoginPage() {
         <button
           onClick={handleGoogleSignIn}
           disabled={loading}
-          className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-300 rounded-xl px-8 py-4 font-medium transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg mx-auto"
+          className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-300 rounded-xl px-8 py-4 font-medium transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
         >
           {loading ? (
             <>
