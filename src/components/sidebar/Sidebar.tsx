@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useChatStore } from '../../store/chatStore'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
-import { Plus, MessageSquare, Trash2, LogOut, User, Loader2 } from 'lucide-react'
+import { Plus, MessageSquare, LogOut, User, Loader2 } from 'lucide-react'
+import { ChatMenu } from './ChatMenu'
 
 export function Sidebar() {
   const { user, signOut } = useAuth()
@@ -10,6 +11,8 @@ export function Sidebar() {
   const [isLoadingChats, setIsLoadingChats] = useState(false)
   const [isCreatingChat, setIsCreatingChat] = useState(false)
   const [projectId, setProjectId] = useState<string | null>(null)
+  const [renamingChatId, setRenamingChatId] = useState<string | null>(null)
+  const [newChatTitle, setNewChatTitle] = useState('')
 
   // Obtener o crear project_id al montar
   useEffect(() => {
@@ -51,6 +54,27 @@ export function Sidebar() {
 
         // Cargar chats
         await loadChats(user.id, currentProjectId)
+
+        // Verificar si hay chats
+        const { data: existingChats } = await supabase
+          .from('chats')
+          .select('id, updated_at')
+          .eq('project_id', currentProjectId)
+          .order('updated_at', { ascending: false })
+          .limit(1)
+
+        if (!existingChats || existingChats.length === 0) {
+          // No hay chats, crear uno automáticamente
+          console.log('🆕 Auto-creating first chat')
+          const chatId = await createChat('New Chat', user.id, currentProjectId)
+          setCurrentChat(chatId)
+        } else {
+          // Hay chats, seleccionar el más reciente automáticamente
+          console.log('📂 Auto-selecting most recent chat')
+          const mostRecentChatId = existingChats[0].id
+          setCurrentChat(mostRecentChatId)
+          await loadMessages(mostRecentChatId)
+        }
       } catch (error) {
         console.error('Error initializing project:', error)
       } finally {
@@ -59,14 +83,14 @@ export function Sidebar() {
     }
 
     initProject()
-  }, [user, loadChats])
+  }, [user, loadChats, createChat, setCurrentChat, loadMessages])
 
   const handleNewChat = async () => {
     if (!user || !projectId) return
 
     try {
       setIsCreatingChat(true)
-      const chatId = await createChat('Nuevo Chat', user.id, projectId)
+      const chatId = await createChat('New Chat', user.id, projectId)
       setCurrentChat(chatId)
     } catch (error) {
       console.error('Error creating chat:', error)
@@ -83,9 +107,38 @@ export function Sidebar() {
     }
   }
 
-  const handleDeleteChat = async (chatId: string, e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleRenameChat = async (chatId: string) => {
+    const chat = chats.find(c => c.id === chatId)
+    if (!chat) return
     
+    setRenamingChatId(chatId)
+    setNewChatTitle(chat.title)
+  }
+
+  const saveRename = async (chatId: string) => {
+    if (!newChatTitle.trim()) return
+
+    try {
+      const { error } = await supabase
+        .from('chats')
+        .update({ title: newChatTitle.trim() })
+        .eq('id', chatId)
+
+      if (error) throw error
+
+      // Recargar chats
+      if (user && projectId) {
+        await loadChats(user.id, projectId)
+      }
+
+      setRenamingChatId(null)
+      setNewChatTitle('')
+    } catch (error) {
+      console.error('Error renaming chat:', error)
+    }
+  }
+
+  const handleDeleteChat = async (chatId: string) => {
     if (!confirm('¿Eliminar este chat?')) return
 
     try {
@@ -104,7 +157,7 @@ export function Sidebar() {
   }
 
   return (
-    <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-screen">
+    <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-screen flex-shrink-0">
       {/* Header */}
       <div className="p-4 border-b border-gray-800">
         <button
@@ -115,12 +168,12 @@ export function Sidebar() {
           {isCreatingChat ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              <span>Creando...</span>
+              <span>Creating...</span>
             </>
           ) : (
             <>
               <Plus size={18} />
-              <span>Nuevo Chat</span>
+              <span>New Chat</span>
             </>
           )}
         </button>
@@ -135,40 +188,62 @@ export function Sidebar() {
         ) : chats.length === 0 ? (
           <div className="text-center py-8 px-4">
             <MessageSquare className="mx-auto mb-2 text-gray-600" size={32} />
-            <p className="text-sm text-gray-500">No hay chats aún</p>
-            <p className="text-xs text-gray-600 mt-1">Crea uno nuevo para empezar</p>
+            <p className="text-sm text-gray-500">No chats yet</p>
+            <p className="text-xs text-gray-600 mt-1">Create a new one to get started</p>
           </div>
         ) : (
           <div className="space-y-1">
             {chats.map((chat) => (
-              <button
+              <div
                 key={chat.id}
-                onClick={() => handleSelectChat(chat.id)}
-                className={`w-full text-left px-3 py-3 rounded-lg transition-colors group relative ${
+                className={`rounded-lg transition-colors group relative ${
                   currentChatId === chat.id
                     ? 'bg-gray-800 text-white'
                     : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
                 }`}
               >
-                <div className="flex items-start gap-2">
-                  <MessageSquare size={16} className="mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{chat.title}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      {new Date(chat.updated_at).toLocaleDateString('es-ES', {
-                        day: 'numeric',
-                        month: 'short',
-                      })}
-                    </p>
+                {renamingChatId === chat.id ? (
+                  <div className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="text"
+                      value={newChatTitle}
+                      onChange={(e) => setNewChatTitle(e.target.value)}
+                      onBlur={() => saveRename(chat.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') saveRename(chat.id)
+                        if (e.key === 'Escape') {
+                          setRenamingChatId(null)
+                          setNewChatTitle('')
+                        }
+                      }}
+                      autoFocus
+                      className="w-full bg-gray-700 text-white text-sm px-2 py-1 rounded border border-blue-500 focus:outline-none"
+                    />
                   </div>
+                ) : (
                   <button
-                    onClick={(e) => handleDeleteChat(chat.id, e)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-600/20 rounded"
+                    onClick={() => handleSelectChat(chat.id)}
+                    className="w-full text-left px-3 py-3"
                   >
-                    <Trash2 size={14} className="text-red-400" />
+                    <div className="flex items-start gap-2">
+                      <MessageSquare size={16} className="mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{chat.title}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {new Date(chat.updated_at).toLocaleDateString('es-ES', {
+                            day: 'numeric',
+                            month: 'short',
+                          })}
+                        </p>
+                      </div>
+                      <ChatMenu
+                        onRename={() => handleRenameChat(chat.id)}
+                        onDelete={() => handleDeleteChat(chat.id)}
+                      />
+                    </div>
                   </button>
-                </div>
-              </button>
+                )}
+              </div>
             ))}
           </div>
         )}
@@ -199,7 +274,7 @@ export function Sidebar() {
           className="w-full text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg px-3 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2"
         >
           <LogOut size={16} />
-          <span>Cerrar sesión</span>
+          <span>Sign out</span>
         </button>
       </div>
     </div>
