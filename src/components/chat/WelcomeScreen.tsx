@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Bot } from 'lucide-react'
 
 interface WelcomeScreenProps {
   onExampleClick: (prompt: string) => void
@@ -73,12 +72,15 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>(0)
 
   return (
-    <div className="flex flex-col items-center justify-center h-full text-gray-600 text-center px-6 py-8 overflow-y-auto">
-      <Bot size={56} className="mb-4 text-gray-400" />
-      <p className="text-xl font-semibold mb-2 text-gray-900">Welcome to Zipna!</p>
-      <p className="text-base max-w-md text-gray-600 mb-10">
-        Choose a category and example to get started
-      </p>
+    <div className="flex flex-col items-center justify-center h-full text-gray-600 text-center px-6 pt-12 pb-8 overflow-y-auto">
+      <img
+        src="/favicon-zipna.ico.png"
+        alt="Zipna"
+        className="w-20 h-20 mb-8 object-contain"
+      />
+      <h2 className="text-6xl font-bold mb-16 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+        How can I help you?
+      </h2>
 
       {/* Categories Tabs - Horizontal */}
       <div className="flex gap-4 mb-8 flex-wrap justify-center">
@@ -91,10 +93,10 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
             }`}
           >
             <div
-              className={`relative overflow-hidden rounded-xl p-1 ${
+              className={`relative overflow-hidden rounded-xl p-1 transition-all duration-300 ${
                 selectedCategory === idx
-                  ? 'bg-gradient-to-br from-yellow-400 via-orange-400 to-cyan-400'
-                  : 'bg-gradient-to-br from-gray-200 to-gray-300'
+                  ? 'bg-gradient-to-br from-yellow-400 via-orange-400 to-cyan-400 shadow-[0_0_20px_rgba(250,204,21,0.4)]'
+                  : 'bg-gradient-to-br from-gray-200 to-gray-300 hover:shadow-lg'
               }`}
             >
               <div className="bg-white rounded-lg p-3">
@@ -123,7 +125,7 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
             <button
               key={idx}
               onClick={() => onExampleClick(example.prompt)}
-              className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-400 rounded-xl p-5 text-left transition-all duration-300 group shadow-sm hover:shadow-lg transform hover:-translate-y-1"
+              className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] rounded-xl p-5 text-left transition-all duration-300 group shadow-sm hover:shadow-lg transform hover:-translate-y-1"
             >
               <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 leading-relaxed">
                 {example.label}

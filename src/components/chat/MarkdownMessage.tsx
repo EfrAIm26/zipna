@@ -7,62 +7,81 @@ interface MarkdownMessageProps {
 
 export function MarkdownMessage({ content }: MarkdownMessageProps) {
   return (
-    <div className="prose prose-sm max-w-none">
+    <div className="prose prose-sm max-w-none text-gray-800">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          // Headings
-          h1: ({ children }) => <h1 className="text-xl font-bold mb-2">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-lg font-bold mb-2">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-base font-bold mb-1">{children}</h3>,
+          // Headings - Estilo Notion
+          h1: ({ children }) => <h1 className="text-2xl font-bold mb-3 text-gray-900">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-semibold mb-3 text-gray-900">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-semibold mb-2 text-gray-900">{children}</h3>,
           
           // Paragraphs
-          p: ({ children }) => <p className="mb-3 leading-relaxed">{children}</p>,
+          p: ({ children }) => <p className="mb-4 leading-relaxed text-gray-800">{children}</p>,
           
-          // Lists
-          ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
-          li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+          // Lists - Estilo limpio
+          ul: ({ children }) => <ul className="list-disc list-outside ml-5 mb-4 space-y-1.5">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal list-outside ml-5 mb-4 space-y-1.5">{children}</ol>,
+          li: ({ children }) => <li className="leading-relaxed text-gray-800">{children}</li>,
           
-          // Code
+          // Code - JetBrains Mono style
           code: ({ children, ...props }) => {
             const isInline = !String(children).includes('\n')
             return isInline ? (
-              <code className="bg-gray-800 text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
+              <code className="bg-pink-50 text-pink-700 border border-pink-200 px-1.5 py-0.5 rounded text-sm" style={{ fontFamily: "'JetBrains Mono', monospace" }} {...props}>
                 {children}
               </code>
             ) : (
-              <code className="block bg-gray-900 text-gray-100 p-3 rounded-lg my-2 overflow-x-auto font-mono text-sm" {...props}>
+              <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg my-3 overflow-x-auto text-sm leading-relaxed shadow-sm" style={{ fontFamily: "'JetBrains Mono', monospace" }} {...props}>
                 {children}
               </code>
             )
           },
           
           // Pre (code blocks)
-          pre: ({ children }) => <pre className="my-2">{children}</pre>,
+          pre: ({ children }) => <pre className="my-3">{children}</pre>,
           
-          // Strong (bold)
-          strong: ({ children }) => <strong className="font-bold text-gray-900">{children}</strong>,
+          // Strong (bold) - Notion style
+          strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
           
           // Em (italic)
-          em: ({ children }) => <em className="italic">{children}</em>,
+          em: ({ children }) => <em className="italic text-gray-700">{children}</em>,
           
-          // Links
+          // Links - Blue underline style
           a: ({ children, href }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 underline decoration-blue-300 hover:decoration-blue-500 transition-colors">
               {children}
             </a>
           ),
           
-          // Blockquote
+          // Blockquote - Notion style
           blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2">
+            <blockquote className="border-l-4 border-blue-400 bg-blue-50 pl-4 py-2 my-3 italic text-gray-700">
               {children}
             </blockquote>
           ),
           
           // Horizontal rule
-          hr: () => <hr className="my-4 border-gray-300" />,
+          hr: () => <hr className="my-6 border-gray-200" />,
+          
+          // Tables - Clean style
+          table: ({ children }) => (
+            <div className="overflow-x-auto my-4">
+              <table className="min-w-full border border-gray-200 rounded-lg">
+                {children}
+              </table>
+            </div>
+          ),
+          th: ({ children }) => (
+            <th className="bg-gray-100 border border-gray-200 px-4 py-2 text-left font-semibold text-gray-900">
+              {children}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td className="border border-gray-200 px-4 py-2 text-gray-800">
+              {children}
+            </td>
+          ),
         }}
       >
         {content}

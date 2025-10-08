@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { type Message } from '../../store/chatStore';
-import { User, Bot } from 'lucide-react';
 import { MarkdownMessage } from './MarkdownMessage';
 import { WelcomeScreen } from './WelcomeScreen';
 
@@ -24,62 +23,52 @@ export function MessageList({ messages, isLoading, onExampleClick }: MessageList
         <WelcomeScreen onExampleClick={onExampleClick} />
       )}
 
-      <div className="w-full max-w-full space-y-4">
+      <div className="w-full max-w-full space-y-6">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div
-              className={`flex gap-3 max-w-[85%] ${
-                message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-              }`}
-            >
-              <div
-                className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
-                  message.role === 'user' 
-                    ? 'bg-blue-500 text-white' 
-                    : 'bg-gray-200 text-gray-700'
-                }`}
-              >
-                {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
-              </div>
-              <div
-                className={`rounded-2xl px-4 py-3 ${
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-900 border border-gray-200'
-                }`}
-              >
-                {message.role === 'assistant' ? (
-                  <MarkdownMessage content={message.content} />
-                ) : (
-                  <p className="whitespace-pre-wrap break-words leading-relaxed">{message.content}</p>
-                )}
-                <p className={`text-xs mt-2 ${
-                  message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
-                }`}>
-                  {new Date(message.timestamp).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </p>
-              </div>
+            <div className={`max-w-[85%] ${message.role === 'user' ? 'ml-auto' : 'mr-auto'}`}>
+              {message.role === 'assistant' ? (
+                // AI Message - Estilo Cursor/ChatGPT
+                <div className="bg-transparent">
+                  <div className="prose prose-sm max-w-none">
+                    <MarkdownMessage content={message.content} />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    {new Date(message.timestamp).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+              ) : (
+                // User Message - Azul suave con brillo
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl px-5 py-3 shadow-sm hover:shadow-[0_0_12px_rgba(59,130,246,0.25)] transition-shadow duration-200">
+                  <p className="text-gray-800 whitespace-pre-wrap break-words leading-relaxed font-normal">
+                    {message.content}
+                  </p>
+                  <p className="text-xs text-blue-400 mt-2">
+                    {new Date(message.timestamp).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         ))}
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="flex gap-3 max-w-[85%]">
-              <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center bg-gray-200 text-gray-700">
-                <Bot size={20} />
-              </div>
-              <div className="bg-white text-gray-900 rounded-2xl px-4 py-3 border border-gray-200">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="max-w-[85%]">
+              <div className="bg-transparent">
+                <div className="flex gap-1.5">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>

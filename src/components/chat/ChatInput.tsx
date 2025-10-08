@@ -4,10 +4,14 @@ import { SendHorizontal } from 'lucide-react';
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isLoading: boolean;
+  value?: string;
+  onValueChange?: (value: string) => void;
 }
 
-export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
-  const [value, setValue] = useState('');
+export function ChatInput({ onSendMessage, isLoading, value: externalValue, onValueChange }: ChatInputProps) {
+  const [internalValue, setInternalValue] = useState('');
+  const value = externalValue !== undefined ? externalValue : internalValue;
+  const setValue = onValueChange || setInternalValue;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = () => {
@@ -49,21 +53,21 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Describe el diagrama que quieres crear... (Ej: 'Proceso para hacer una pizza')"
+            placeholder="Describe the diagram or graph you want to create... (e.g., 'A Harry Potter mind map')"
             disabled={isLoading}
-            className="flex-1 bg-white text-gray-900 rounded-xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed min-h-[52px] max-h-[120px] border border-gray-300"
+            className="flex-1 bg-white text-gray-900 rounded-xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:cursor-not-allowed min-h-[52px] max-h-[120px] border border-gray-300 shadow-sm transition-shadow duration-200"
             rows={1}
           />
           <button
             onClick={handleSend}
             disabled={isLoading || !value.trim()}
-            className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl p-3 transition-colors flex items-center justify-center min-w-[52px] h-[52px] shadow-sm"
+            className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl p-3 transition-all duration-200 flex items-center justify-center min-w-[52px] h-[52px] shadow-md hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
           >
             <SendHorizontal size={22} />
           </button>
         </div>
         <p className="text-xs text-gray-500 mt-2 text-center">
-          Presiona <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Enter</kbd> para enviar · <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Shift+Enter</kbd> para nueva línea
+          Press <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Enter</kbd> to send · <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Shift+Enter</kbd> for new line
         </p>
       </div>
     </div>

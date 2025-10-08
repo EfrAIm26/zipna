@@ -31,13 +31,14 @@ export function ChatContainerV2() {
   const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL)
   const [attachedFiles, setAttachedFiles] = useState<Array<{ name: string; content: string }>>([])
   const [showFileUpload, setShowFileUpload] = useState(false)
+  const [inputValue, setInputValue] = useState('')
 
   const handleFilesProcessed = (files: Array<{ name: string; type: string; content: string }>) => {
     setAttachedFiles(files.map(f => ({ name: f.name, content: f.content })))
   }
 
   const handleExampleClick = (prompt: string) => {
-    handleSendMessage(prompt)
+    setInputValue(prompt)
   }
 
   const handleSendMessage = async (content: string) => {
@@ -46,6 +47,7 @@ export function ChatContainerV2() {
     try {
       setError(null)
       setLoading(true)
+      setInputValue('') // Limpiar input inmediatamente
 
       // Si es el primer mensaje, actualizar el título del chat
       const currentChat = chats.find(c => c.id === currentChatId)
@@ -189,7 +191,12 @@ export function ChatContainerV2() {
 
           {/* Input (Chat Input ya tiene el botón de enviar) */}
           <div className="flex-1">
-            <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+            <ChatInput 
+              onSendMessage={handleSendMessage} 
+              isLoading={isLoading}
+              value={inputValue}
+              onValueChange={setInputValue}
+            />
           </div>
         </div>
       </div>
