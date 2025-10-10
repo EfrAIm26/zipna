@@ -72,26 +72,27 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>(0)
 
   return (
-    <div className="flex flex-col items-center h-full text-gray-600 text-center px-6 py-8 overflow-y-auto">
-      {/* Top section - Logo and Title */}
-      <div className="flex flex-col items-center justify-center flex-shrink-0 pt-8 pb-12">
-        <img
-          src="/favicon-zipna.ico.png"
-          alt="Zipna"
-          className="w-16 h-16 mb-6 object-contain"
-        />
-        <h2 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-          How can I help you?
-        </h2>
-      </div>
+    <div className="w-full max-w-5xl mx-auto px-6">
+      <div className="flex flex-col items-center justify-center">
+        {/* Logo and Title */}
+        <div className="mb-8 flex flex-col items-center">
+          <img
+            src="/favicon-zipna.ico.png"
+            alt="Zipna"
+            className="w-16 h-16 mb-4 object-contain"
+          />
+          <h2 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent text-center">
+            How can I help you?
+          </h2>
+        </div>
 
-      {/* Middle section - Categories */}
-      <div className="flex gap-4 mb-8 flex-wrap justify-center flex-shrink-0">
+        {/* Categories */}
+        <div className="flex gap-6 mb-8 flex-wrap justify-center items-center">
         {categories.map((category, idx) => (
           <button
             key={category.name}
             onClick={() => setSelectedCategory(idx)}
-            className={`group relative transition-all duration-300 ${
+            className={`group relative transition-all duration-300 flex flex-col items-center ${
               selectedCategory === idx ? 'scale-105' : 'scale-100 hover:scale-102'
             }`}
           >
@@ -102,7 +103,7 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
                   : 'bg-gradient-to-br from-gray-200 to-gray-300 hover:shadow-lg'
               }`}
             >
-              <div className="bg-white rounded-lg p-3">
+              <div className="bg-white rounded-lg p-4">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -111,7 +112,7 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
               </div>
             </div>
             <p
-              className={`mt-2 text-sm font-semibold ${
+              className={`mt-3 text-sm font-semibold ${
                 selectedCategory === idx ? 'text-gray-900' : 'text-gray-600'
               }`}
             >
@@ -121,14 +122,14 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
         ))}
       </div>
 
-      {/* Bottom section - Examples (more space below) */}
-      <div className="w-full max-w-4xl flex-1 flex items-center justify-center pb-12">
-        <div className="grid grid-cols-2 gap-4 w-full">
+        {/* Examples */}
+        <div className="w-full max-w-4xl">
+          <div className="grid grid-cols-2 gap-5">
           {categories[selectedCategory].examples.map((example, idx) => (
             <button
               key={idx}
               onClick={() => onExampleClick(example.prompt)}
-              className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] rounded-xl p-5 text-left transition-all duration-300 group shadow-sm hover:shadow-lg transform hover:-translate-y-1"
+              className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] rounded-xl p-6 text-left transition-all duration-300 group shadow-sm hover:shadow-lg transform hover:-translate-y-1"
             >
               <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 leading-relaxed">
                 {example.label}
@@ -136,6 +137,7 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
               <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-100/20 to-purple-100/20 rounded-full blur-xl group-hover:from-blue-200/30 group-hover:to-purple-200/30 transition-all duration-300 -mr-8 -mt-8"></div>
             </button>
           ))}
+          </div>
         </div>
       </div>
     </div>

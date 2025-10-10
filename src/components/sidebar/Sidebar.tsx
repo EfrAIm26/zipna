@@ -13,11 +13,12 @@ export function Sidebar() {
   const [projectId, setProjectId] = useState<string | null>(null)
   const [renamingChatId, setRenamingChatId] = useState<string | null>(null)
   const [newChatTitle, setNewChatTitle] = useState('')
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  // Obtener o crear project_id al montar
+  // Obtener o crear project_id al montar - SOLO UNA VEZ
   useEffect(() => {
     const initProject = async () => {
-      if (!user) return
+      if (!user || isInitialized) return
 
       try {
         setIsLoadingChats(true)
@@ -69,12 +70,16 @@ export function Sidebar() {
           const chatId = await createChat('New Chat', user.id, currentProjectId)
           setCurrentChat(chatId)
         } else {
-          // Hay chats, seleccionar el más reciente automáticamente
-          console.log('📂 Auto-selecting most recent chat')
-          const mostRecentChatId = existingChats[0].id
-          setCurrentChat(mostRecentChatId)
-          await loadMessages(mostRecentChatId)
+          // Hay chats, seleccionar el más reciente automáticamente SOLO si no hay chat seleccionado
+          if (!currentChatId) {
+            console.log('📂 Auto-selecting most recent chat')
+            const mostRecentChatId = existingChats[0].id
+            setCurrentChat(mostRecentChatId)
+            await loadMessages(mostRecentChatId)
+          }
         }
+
+        setIsInitialized(true)
       } catch (error) {
         console.error('Error initializing project:', error)
       } finally {
@@ -83,7 +88,7 @@ export function Sidebar() {
     }
 
     initProject()
-  }, [user, loadChats, createChat, setCurrentChat, loadMessages])
+  }, [user])
 
   const handleNewChat = async () => {
     if (!user || !projectId) return

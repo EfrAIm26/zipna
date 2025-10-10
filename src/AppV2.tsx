@@ -45,37 +45,30 @@ function AppContent() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header - FIJO, sin scroll */}
-        <header className="bg-white border-b border-gray-200 flex-shrink-0">
-          <div className="px-4 py-2.5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="text-white" size={18} />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">Zipna</h1>
-              </div>
+        {/* Header - Solo mostrar cuando hay diagrama */}
+        {hasDiagram && (
+          <header className="bg-white border-b border-gray-200 flex-shrink-0">
+            <div className="px-4 py-2.5 flex items-center justify-end">
+              {/* Toggle diagram panel button */}
+              <button
+                onClick={() => setShowDiagramPanel(!showDiagramPanel)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm"
+              >
+                {showDiagramPanel ? (
+                  <>
+                    <PanelRightClose size={16} className="text-gray-600" />
+                    <span className="font-medium text-gray-700">Hide</span>
+                  </>
+                ) : (
+                  <>
+                    <PanelRightOpen size={16} className="text-gray-600" />
+                    <span className="font-medium text-gray-700">Show</span>
+                  </>
+                )}
+              </button>
             </div>
-
-            {/* Toggle diagram panel button - siempre visible */}
-            <button
-              onClick={() => setShowDiagramPanel(!showDiagramPanel)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm"
-            >
-              {showDiagramPanel ? (
-                <>
-                  <PanelRightClose size={16} className="text-gray-600" />
-                  <span className="font-medium text-gray-700">Hide</span>
-                </>
-              ) : (
-                <>
-                  <PanelRightOpen size={16} className="text-gray-600" />
-                  <span className="font-medium text-gray-700">Show</span>
-                </>
-              )}
-            </button>
-          </div>
-        </header>
+          </header>
+        )}
 
         {/* Content area - flex-1 para ocupar el resto del espacio */}
         <div className="flex-1 flex overflow-hidden min-h-0">
