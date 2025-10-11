@@ -31,8 +31,8 @@ export function MessageList({ messages, isLoading, onExampleClick }: MessageList
           <WelcomeScreen onExampleClick={onExampleClick} />
         </div>
       ) : (
-        // Messages - Layout normal
-        <div className="max-w-5xl mx-auto px-8 py-6">
+        // Messages - Layout normal con márgenes laterales
+        <div className="max-w-5xl mx-auto px-6 py-6">
           <div className="space-y-8">
             {messages.map((message) => (
               <div
@@ -41,8 +41,8 @@ export function MessageList({ messages, isLoading, onExampleClick }: MessageList
               >
                 <div className={`max-w-[85%] ${message.role === 'user' ? 'ml-auto' : 'mr-auto'}`}>
                   {message.role === 'assistant' ? (
-                    // AI Message - Estilo ChatGPT con padding
-                    <div className="bg-transparent px-4 py-3">
+                    // AI Message - Con márgenes laterales estilo ChatGPT
+                    <div className="bg-transparent px-6 py-3">
                       <div className="prose prose-sm max-w-none">
                         <MarkdownMessage content={removeCodeBlocks(message.content)} />
                       </div>
@@ -55,7 +55,7 @@ export function MessageList({ messages, isLoading, onExampleClick }: MessageList
                     </div>
                   ) : (
                     // User Message - Azul suave con brillo
-                    <div className="bg-blue-50 border border-blue-200 rounded-2xl px-5 py-3 shadow-sm hover:shadow-[0_0_12px_rgba(59,130,246,0.25)] transition-shadow duration-200">
+                    <div className="bg-blue-50 border border-blue-200 rounded-2xl px-6 py-3 shadow-sm hover:shadow-[0_0_12px_rgba(59,130,246,0.25)] transition-shadow duration-200">
                       <p className="text-gray-800 whitespace-pre-wrap break-words leading-relaxed font-normal">
                         {message.content}
                       </p>
@@ -74,7 +74,7 @@ export function MessageList({ messages, isLoading, onExampleClick }: MessageList
             {isLoading && (
               <div className="flex justify-start">
                 <div className="max-w-[85%]">
-                  <div className="bg-transparent px-4 py-3">
+                  <div className="bg-transparent px-6 py-3">
                     <div className="flex gap-1.5">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />

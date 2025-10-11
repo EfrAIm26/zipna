@@ -32,10 +32,10 @@ export function LoginPage() {
         {/* Title */}
         <h1 className="text-5xl font-bold text-gray-900 mb-6 text-center">Zipna</h1>
 
-        {/* Tagline */}
-        <p className="text-gray-600 text-center mb-12 text-lg leading-relaxed max-w-2xl px-8">
-          You don't need a computer science degree—or Power BI or SQL—to build professional analytics projects.
-        </p>
+              {/* Tagline */}
+              <p className="text-gray-600 text-center mb-12 text-lg leading-relaxed max-w-2xl px-8">
+                Create professional diagrams effortlessly with AI.
+              </p>
 
         {/* Error message */}
         {error && (
